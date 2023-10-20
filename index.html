@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./index.css" />
+    <title>Painel - Atendimento</title>
+</head>
+
+<body>
+    <nav class="menuHome">
+        <p>Atendente:  <a class="link" style="font-weight: bold;" id="attendantName"></a> </p>
+        <p> <a class="link">Painel de atendimento</a> </p>
+        <p>Setor: <a class="link" style="font-weight: bold;" id="sectorName"> </a> </p>
+    </nav>
+    <button onclick="reloadPage()">Recarregar sistema</button>
+    <div class="superDaddy">
+        <div class="content1">
+            <h1 id="status"> Status: Livre (Selecione um ticket e inicie um atendimento)</h1>
+            <p class="tip">1 - Selecione um ticket<br/>2 - Inicie o atendimento<br/>3 - Finalize o atendimento <br/>4 - Reinicie o processo</p>
+            <p id="tip2" class="tip2">Ao clicar em iniciar atendimento, o sistema irá verificar primeiro se o mesmo já está sendo atendido.<br/>Se não, você irá começar a atende-lo.</p>
+            <button onclick="startTreatment()" id="start">Selecione um ticket</button>
+            <button onclick="finishTreatment()" id="finish">Finalizar atendimento</button>
+            <h3 id="starting">Iniciando atendimento...</h3>
+            <h3 id="started"></h3>
+        </div>
+        <div class="content2" id="container">
+            <div class="content2Info" onclick="autoReload()">
+                <a id="reloadTickets"> Recarregar tickets <img src="./images/refresh-cw.svg" class="reloadImg"/> </a>
+            </div>
+            
+        </div>
+    </div>
+    <script src="./node_modules/axios/dist/axios.min.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>
+
+<!--
+                Quando o atendente verificar os tickets
+                um array será gerado
+                [
+                {preferred: true, ticketNumber: 1}
+                ]
+                o button será gerado usando javascript
+                <button class="tickets" onclick="selectTicket({ticketNumber: 1})">
+
+            -->
+            <!-- <button class="tickets" onclick="selectTicket({ticketNumber: 1})">
+                <p class="ticketsText">Preferencial *</p>
+                <div>
+                    <p>12</p>
+                </div>
+            </button>
+            <button class="tickets" onclick="selectTicket()">
+                <p class="ticketsText">Preferencial *</p>
+                <div>
+                    <p>12</p>
+                </div>
+            </button>
+            <button class="tickets" onclick="selectTicket()">
+                <p class="ticketsText">Preferencial *</p>
+                <div>
+                    <p>12</p>
+                </div>
+            </button>
+            <button class="tickets" onclick="selectTicket()">
+                <p class="ticketsText">Preferencial *</p>
+                <div>
+                    <p>12</p>
+                </div>
+            </button>
+            <button class="tickets" onclick="selectTicket()">
+                <p class="ticketsText">Preferencial *</p>
+                <div>
+                    <p>12</p>
+                </div>
+            </button>
+            <button class="tickets" onclick="selectTicket()">
+                <p class="ticketsText">Preferencial *</p>
+                <div>
+                    <p>12</p>
+                </div>
+            </button>
+            <button class="tickets" onclick="selectTicket()">
+                <p class="ticketsText">Preferencial *</p>
+                <div>
+                    <p>12</p>
+                </div>
+            </button>
+            <button class="tickets" onclick="selectTicket()">
+                <p class="ticketsText">Preferencial *</p>
+                <div>
+                    <p>12</p>
+                </div>
+            </button> -->
