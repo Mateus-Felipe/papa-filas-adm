@@ -6,8 +6,11 @@ var isReloading = false;
 var inTreatment = false;
 
 function loadInfo() {
-    const dataAttendant = JSON.parse(getCookie('datauser'));
-    console.log(dataAttendant);
+    var userInfosCookie = getCookie('datauser')
+    if(!userInfosCookie){
+        window.location.href = "login.html"
+    }
+    const dataAttendant = JSON.parse(userInfosCookie);
     var attName = document.getElementById('attendantName')
     attName.innerText = `${dataAttendant.name}`
     var secName = document.getElementById('sectorName')
@@ -38,19 +41,26 @@ async function startTreatment() {
     document.getElementById('tip2').style.display = 'none';
     buttonStart.style.display = 'none';
     document.getElementById('starting').style.display = 'block';
-    console.log(selectedTicketNumber);
     await axios.post('http://localhost:5400/treatment/start', {
-        ticket: selectedTicketNumber[0],
-        id: selectedTicketNumber[1]
+        ticket_id: selectedTicketNumber[1],
+        sector: selectedTicketNumber[2]
     })
         .then(res => {
-            console.log(res.data.response_data);
+            console.log(res.data);
             document.getElementById('started').style.display = 'block';
             document.getElementById('started').innerText = `Atendimento iniciado: ${res.data.response_data.value}`
             document.getElementById('finish').style.display = 'block';
             document.getElementById('finish').innerText = `Finalizar atendimento ${res.data.response_data.value}`;
             document.getElementById('starting').style.display = 'none';
             document.getElementById('started').style.display = 'none';
+            var newDate = new Date(res.data.response_data.created_at);
+            document.getElementById('infoTicket').innerHTML = `
+                <h3>Numero: ${res.data.response_data.value}</h3>
+                <h3>Preferêncial: ${res.data.response_data.isPreferred ? 'Sim' : 'Não'}</h3>
+                <h3>Setor: ${res.data.response_data.sectorName}</h3>
+                <h3>Data: ${newDate.getDate() + '/' + (newDate.getMonth() + 1) + '/' + newDate.getFullYear()}</h3>
+                <h3>Hora: ${newDate.getHours() + ':' + newDate.getMinutes()}</h3>
+            `
             inTreatment = true;
         }).catch(err => {
             console.warn(err);
@@ -62,8 +72,8 @@ async function startTreatment() {
 
 async function finishTreatment() {
     await axios.post('http://localhost:5400/treatment/finish', {
-        ticket: selectedTicketNumber[0],
-        id: selectedTicketNumber[1]
+        ticket_id: selectedTicketNumber[1],
+        sector: selectedTicketNumber[2]
     })
         .then(res => {
             console.log(res.data.response_data);
@@ -97,6 +107,7 @@ async function autoReload() {
     isReloading = true;
     await axios.get('http://localhost:5400/ticket/all')
         .then(res => {
+            console.log(res.data.response_data);
             tickets = res.data.response_data.filter(ticket => ticket.isFinished === false && ticket.isWaiting === true);
             createTicketDivs();
         }).catch(err => {
@@ -123,14 +134,14 @@ function createTicketDivs() {
         isReloading = false;
         return;
     }
-
+    console.log('aaaaa', tickets);
     tickets.forEach(ticket => {
         const buttonDiv = document.createElement('div');
         const preferentialText = ticket.isPreferred ? 'Preferencial *' : 'Não Preferencial';
         const ticketNumber = ticket.value;
 
         buttonDiv.innerHTML = `
-            <button class="tickets" onclick="selectTicket([${ticket.value}, '${ticket.id}'])">
+            <button class="tickets" onclick="selectTicket([${ticket.value}, '${ticket.id}', '${ticket.sectorName}'])">
                 <p class="ticketsText">${preferentialText}</p>
                 <div>
                     <p>${ticketNumber}</p>
