@@ -10,90 +10,54 @@
 
 <body>
     <nav class="menuHome">
-        <p>Atendente:  <a class="link" style="font-weight: bold;" id="attendantName"></a> </p>
-        <p> <a class="link">Painel de atendimento</a> </p>
-        <p>Setor: <a class="link" style="font-weight: bold;" id="sectorName"> </a> </p>
+        <p>Atendente: <a class="link" style="font-weight: bold;" id="attendantName"></a> </p>
+        <p> <a class="link" style="font-weight: bold;">Painel de atendimento</a> </p>
+        <p>Setor: <a class="link" style="font-weight: bold;" id="sectorName"> </a> <br />Versão: 2.1.0 - 05/08/24</p>
     </nav>
-    <button onclick="reloadPage()">Recarregar sistema</button>
+    <button onclick="reloadPage()" style="padding: 5px; background-color: gray; font-weight: bold; color: white; cursor: pointer">Recarregar sistema</button>
+    <p style="font-size: 10px;">Mateus Felipe - UNIG 2024</p>
     <div class="superDaddy">
         <div class="content1">
             <h1 id="status"> Status: Livre (Selecione um ticket e inicie um atendimento)</h1>
-            <p class="tip">1 - Selecione um ticket<br/>2 - Inicie o atendimento<br/>3 - Finalize o atendimento <br/>4 - Reinicie o processo</p>
-            <p id="tip2" class="tip2">Ao clicar em iniciar atendimento, o sistema irá verificar primeiro se o mesmo já está sendo atendido.<br/>Se não, você irá começar a atende-lo.</p>
+            <p class="tip">1 - Selecione um ticket
+                <br />2 - Inicie o atendimento
+                <br />3 - Finalize o atendimento
+                <br />4 - Reinicie o processo
+                <br />* Os tickets são atualizados automáticamente após finalizar um atendimento.
+                <br /><b>* Sistema Preferêncial x Comum: 1 para 1</b>
+                <br />&nbsp; &nbsp; - O sistema automáticamente irá selecionar um ticket preferêncial e<br />depois
+                um
+                comum,
+                desde
+                que o
+                software não seja reiniciado.
+            </p>
+            <p id="tip2" class="tip2">Ao clicar em iniciar atendimento, o sistema irá verificar primeiro se o mesmo
+                já
+                está sendo atendido.<br />Se não, você irá começar a atende-lo.</p>
             <div id="infoTicket"></div>
             <button onclick="startTreatment()" id="start">Selecione um ticket</button>
             <button onclick="finishTreatment()" id="finish">Finalizar atendimento</button>
             <h3 id="starting">Iniciando atendimento...</h3>
-            <h3 id="started"></h3>
         </div>
         <div class="content2" id="container">
             <div class="content2Info" onclick="autoReload()">
-                <a id="reloadTickets"> Recarregar tickets <img src="./images/refresh-cw.svg" class="reloadImg"/> </a>
+                <a id="reloadTickets"> Recarregar tickets <img src="./images/refresh-cw.svg" class="reloadImg" />
+                </a>
+                <p style="font-weight: normal; text-align: center;" id="nextTicket">Próximo Ticket:</p>
             </div>
-            
+
+        </div>
+        <div class="content2" id="container2">
+            <div class="content2Info" onclick="autoReload()">
+                <a id="reloadTickets2"> Recarregar tickets já chamados e <br /> não finalizados <img
+                        src="./images/refresh-cw.svg" class="reloadImg" /> </a>
+            </div>
+
         </div>
     </div>
-    <script src="./node_modules/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="index.js"></script>
 </body>
 
 </html>
-
-<!--
-                Quando o atendente verificar os tickets
-                um array será gerado
-                [
-                {preferred: true, ticketNumber: 1}
-                ]
-                o button será gerado usando javascript
-                <button class="tickets" onclick="selectTicket({ticketNumber: 1})">
-
-            -->
-            <!-- <button class="tickets" onclick="selectTicket({ticketNumber: 1})">
-                <p class="ticketsText">Preferencial *</p>
-                <div>
-                    <p>12</p>
-                </div>
-            </button>
-            <button class="tickets" onclick="selectTicket()">
-                <p class="ticketsText">Preferencial *</p>
-                <div>
-                    <p>12</p>
-                </div>
-            </button>
-            <button class="tickets" onclick="selectTicket()">
-                <p class="ticketsText">Preferencial *</p>
-                <div>
-                    <p>12</p>
-                </div>
-            </button>
-            <button class="tickets" onclick="selectTicket()">
-                <p class="ticketsText">Preferencial *</p>
-                <div>
-                    <p>12</p>
-                </div>
-            </button>
-            <button class="tickets" onclick="selectTicket()">
-                <p class="ticketsText">Preferencial *</p>
-                <div>
-                    <p>12</p>
-                </div>
-            </button>
-            <button class="tickets" onclick="selectTicket()">
-                <p class="ticketsText">Preferencial *</p>
-                <div>
-                    <p>12</p>
-                </div>
-            </button>
-            <button class="tickets" onclick="selectTicket()">
-                <p class="ticketsText">Preferencial *</p>
-                <div>
-                    <p>12</p>
-                </div>
-            </button>
-            <button class="tickets" onclick="selectTicket()">
-                <p class="ticketsText">Preferencial *</p>
-                <div>
-                    <p>12</p>
-                </div>
-            </button> -->

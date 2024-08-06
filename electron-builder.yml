@@ -1,0 +1,8 @@
+appId: br.unig.atendimento.hall.ni
+productName: Atendimento A UNIG - NI
+mac:
+  category: br.unig.atendimento.hall.ni
+win:
+  target: nsis
+linux:
+  target: AppImage

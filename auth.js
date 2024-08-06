@@ -1,31 +1,31 @@
-
 var loginVerifyLoading = document.getElementById('loginVerify');
 var loginTitle = document.getElementById('loginTitle');
 
-
 async function isLogged() {
     loginVerifyLoading.style.display = 'flex';
-    var cookiesDataUser = getCookie('datauser')
+    // var cookiesDataUser = getCookie('datauser')
+    var cookiesDataUser = await window.electronAPI.getLoginAuth();
+    // console.log(cookiesDataUser);
+    // await window.electronAPI.setLoginAuth('aaaaaaaaaaa');
     var jsonData = cookiesDataUser ? JSON.parse(cookiesDataUser) : null;
-    console.log(jsonData);
     if (!jsonData || !jsonData.id) {
         loginVerifyLoading.style.display = 'none';
         loginTitle.style.color = '#f00';
-        console.log(loginTitle);
         loginTitle.innerText = "Faça seu login!"
         return;
     }
-    await axios.post('http://localhost:5400/login', {
+    await axios.post('http://172.16.254.253:6100/login', {
         onlyInfo: true,
         login: jsonData.id,
-    }).then( res => {
-        const dataUserCookie = `datauser=${JSON.stringify(res.data.response_data)};max-age=${60 * 60 * 24 * 14};`;
-        window.location.href = '/index.html';
-    }).catch( err => {
+    }).then(async res => {
+        // const dataUserCookie = `datauser=${JSON.stringify(res.data.response_data)};max-age=${60 * 60 * 24 * 14};`;
+        await window.electronAPI.setLoginAuth(JSON.stringify(res.data.response_data));
+        window.location.href = 'index.html';
+    }).catch(err => {
         loginVerifyLoading.style.display = 'none';
         console.error(err);
         document.getElementById('loginTitle').innerText = `Erro: ${err.response.data.error} Você não está logado.`
-        deleteCookie('datauser');
+        // deleteCookie('datauser');
     })
 }
 
@@ -45,20 +45,27 @@ async function handleAuth() {
     }
 
     loginVerifyLoading.style.display = 'flex';
-    await axios.post('http://localhost:5400/login', {
+    await axios.post('http://172.16.254.253:6100/login', {
         login: login.value,
         password: password.value
 
-    }).then(res => {
-        const dataUserCookie = `datauser=${JSON.stringify(res.data.response_data)};max-age=${60 * 60 * 24 * 14};`;
-        document.cookie = dataUserCookie;
-        console.log(res.data.response_data);
-        loginVerifyLoading.style.display = 'none';
-        window.location.href = '/index.html'
+    }).then(async res => {
+        // var expires = new Date('2099-12-31').toGMTString();
+        // document.cookie = `datauser=${JSON.stringify(res.data.response_data)};max-age=${999 * 24 * 24 * 999};`;
+        await window.electronAPI.setLoginAuth(JSON.stringify(res.data.response_data));
+        // setCookie(JSON.stringify(res.data.response_data), 'datauser')
+
+
+        setTimeout(() => window.location.href = 'index.html', 1000);
     }).catch(err => {
         loginVerifyLoading.style.display = 'none';
         loginTitle.style.color = '#f00';
-        loginTitle.innerText = `Erro: ${err.response.data.error}`
+        try {
+            loginTitle.innerText = `Erro: ${err.response.data.error}`
+        } catch {
+            loginTitle.innerText = `Erro: Erro ao se conectar com o servidor! Verifique se o aparelho Papa-Filas está ligado e funcionando. Se persistir, talvez seja necessário reinicia-lo.`
+        }
+        return;
     })
 }
 

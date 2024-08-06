@@ -1,14 +1,17 @@
-
 var selectedTicketNumber = [];
 var buttonStart = document.getElementById('start');
 var tickets = [];
+var ticketsNotFinished = [];
 var isReloading = false;
 var inTreatment = false;
+var sequencePreferred = 0;
 
-function loadInfo() {
-    var userInfosCookie = getCookie('datauser')
-    if(!userInfosCookie){
-        window.location.href = "login.html"
+async function loadInfo() {
+    // var userInfosCookie = getCookie('datauser')
+    var userInfosCookie = await window.electronAPI.getLoginAuth();
+    // console.log(userInfosCookie);
+    if (!userInfosCookie) {
+        return window.location.href = "login.html";
     }
     const dataAttendant = JSON.parse(userInfosCookie);
     var attName = document.getElementById('attendantName')
@@ -33,7 +36,7 @@ function selectTicket(ticketNumber) {
 }
 
 async function startTreatment() {
-    if (!selectedTicketNumber) {
+    if (selectedTicketNumber.length == 0) {
         alert('Selecione algum ticket para começar o atendimento.');
         return;
     }
@@ -41,18 +44,30 @@ async function startTreatment() {
     document.getElementById('tip2').style.display = 'none';
     buttonStart.style.display = 'none';
     document.getElementById('starting').style.display = 'block';
-    await axios.post('http://localhost:5400/treatment/start', {
+    await axios.post('http://172.16.254.253:6100/treatment/start', {
         ticket_id: selectedTicketNumber[1],
-        sector: selectedTicketNumber[2]
+        sector: selectedTicketNumber[2],
+        isPreferred: selectedTicketNumber[3]
+    }, {
+        "Access-Control-Request-Private-Network": true,
+        "Access-Control-Allow-Credentials": true,
     })
-        .then(res => {
-            console.log(res.data);
-            document.getElementById('started').style.display = 'block';
-            document.getElementById('started').innerText = `Atendimento iniciado: ${res.data.response_data.value}`
-            document.getElementById('finish').style.display = 'block';
+        .then(async res => {
+            if (res.data.err) {
+                selectedTicketNumber = [];
+                document.getElementById('start').style.display = 'block';
+                document.getElementById('start').innerText = 'Selecione um ticket';
+                document.getElementById('starting').style.display = 'none';
+                document.getElementById("finish").style.display = "none"
+                document.getElementById('infoTicket').style.display = 'none'
+                inTreatment = false;
+                alert('Usuário já está sendo atendido! Sempre atualize seus tickets antes de chamar');
+                autoReload();
+                return;
+            }
             document.getElementById('finish').innerText = `Finalizar atendimento ${res.data.response_data.value}`;
+            document.getElementById('finish').style.display = 'block';
             document.getElementById('starting').style.display = 'none';
-            document.getElementById('started').style.display = 'none';
             var newDate = new Date(res.data.response_data.created_at);
             document.getElementById('infoTicket').innerHTML = `
                 <h3>Numero: ${res.data.response_data.value}</h3>
@@ -62,39 +77,58 @@ async function startTreatment() {
                 <h3>Hora: ${newDate.getHours() + ':' + newDate.getMinutes()}</h3>
             `
             inTreatment = true;
+            document.getElementById('infoTicket').style.display = 'block'
+            sequencePreferred = await sequencePreferred == 2 ? 0 : sequencePreferred + 1;
         }).catch(err => {
+            document.getElementById('infoTicket').style.display = 'none'
             console.warn(err);
             alert('Ocorreu um erro... Por favor, atualize o seu sistema.');
             inTreatment = false;
-        });
+        })
 
 }
 
-async function finishTreatment() {
-    await axios.post('http://localhost:5400/treatment/finish', {
-        ticket_id: selectedTicketNumber[1],
-        sector: selectedTicketNumber[2]
+async function finishTreatment(dataTicketOld) {
+    // console.log(dataTicketOld[4]);
+    // console.log(selectTicket[1]);
+    if (dataTicketOld && dataTicketOld[3]) {
+        if (!window.confirm(`Tem certeza que deseja finalizar o Ticket ${dataTicketOld[0]} que já foi chamado ? `)) {
+            return;
+        }
+    }
+    await axios.post('http://172.16.254.253:6100/treatment/finish', {
+        ticket_id: dataTicketOld && dataTicketOld[3] ? dataTicketOld[1] : selectedTicketNumber[1],
+        sector: dataTicketOld && dataTicketOld[3] ? dataTicketOld[2] : selectedTicketNumber[2],
+        isPreferred: dataTicketOld && dataTicketOld[3] ? dataTicketOld[4] : selectedTicketNumber[3]
+    }, {
+        "Access-Control-Request-Private-Network": true,
+        "Access-Control-Allow-Credentials": true,
     })
-        .then(res => {
-            console.log(res.data.response_data);
+        .then(() => {
+            var finish = document.getElementById('finish');
             selectedTicketNumber = [];
             document.getElementById('start').style.display = 'block';
             document.getElementById('start').innerText = 'Selecione um ticket';
             document.getElementById('starting').style.display = 'none';
-            document.getElementById('started').style.display = 'none';
-            document.getElementById('finish').style.display = 'none';
+            // document.getElementById('started').style.display = 'none';
+            finish.style.display = "none";
+            document.getElementById('infoTicket').style.display = 'none';
             inTreatment = false;
+            // window.location.reload();
             autoReload();
         }).catch(err => {
-            autoReload();
             console.warn(err);
-            alert('Ocorreu um erro... Por favor, atualize o seu sistema agora.');
+            selectedTicketNumber = [];
             document.getElementById('start').style.display = 'block';
             document.getElementById('start').innerText = 'Selecione um ticket';
             document.getElementById('starting').style.display = 'none';
-            document.getElementById('started').style.display = 'none';
-            document.getElementById('finish').style.display = 'none';
+            // document.getElementById('started').style.display = 'none';
+            finish.style.display = "none";
+            document.getElementById('infoTicket').style.display = 'none';
+            inTreatment = false;
+            autoReload();
         });
+    inTreatment = false;
 }
 
 // Tickets Table
@@ -105,56 +139,143 @@ async function autoReload() {
         return;
     }
     isReloading = true;
-    await axios.get('http://localhost:5400/ticket/all')
-        .then(res => {
-            console.log(res.data.response_data);
-            tickets = res.data.response_data.filter(ticket => ticket.isFinished === false && ticket.isWaiting === true);
+    await axios.get('http://172.16.254.253:6100/ticket/all', {
+        headers: {
+            "ngrok-skip-browser-warning": 4,
+            "Access-Control-Request-Private-Network": true,
+            "Access-Control-Allow-Credentials": true,
+        }
+    })
+        .then(async res => {
+            // console.log(res.data.response_data);
+            // var userInfosCookie = JSON.parse(getCookie('datauser'));
+            var userInfosCookie = await window.electronAPI.getLoginAuth();
+
+            var ticketsTempData = res.data.response_data.filter(ticket => ticket.isFinished === false && ticket.isWaiting === true && ticket.sectorName == JSON.parse(userInfosCookie).sector);
+            var tempDataNotFinished = res.data.response_data.filter(ticket => ticket.isFinished === false && ticket.isWaiting === false && ticket.sectorName == JSON.parse(userInfosCookie).sector);
+
+            /*console.log(JSON.stringify(tickets[0]))
+            console.log(JSON.stringify(ticketsTempData[0]))
+            console.log(JSON.stringify(tickets[0]) != JSON.stringify(ticketsTempData[0])); */
+
+            if (JSON.stringify(tickets[0]) != JSON.stringify(ticketsTempData[0])) {
+                // if (!inTreatment) {
+                await window.electronAPI.blinkTaskbar([true, 'all']);
+                // }
+            } else if (JSON.stringify(tickets[0]) == JSON.stringify(ticketsTempData[0]) && ticketsTempData.length > 0 && !inTreatment) {
+                await window.electronAPI.blinkTaskbar([true, 'minimal']);
+            }
+
+            tickets = ticketsTempData
+            ticketsNotFinished = tempDataNotFinished;
             createTicketDivs();
+            isReloading = false;
         }).catch(err => {
             isReloading = false;
             alert('Ocorreu um erro ao carregar os tickets...');
             console.warn(err);
         })
 }
-function createTicketDivs() {
+async function createTicketDivs() {
+
+    //
     const container = document.getElementById('container');
+    const container2 = document.getElementById('container2');
 
     // Limpa o conteúdo do contêiner
     container.innerHTML = `
-        <div class="content2Info" onclick="autoReload()">
-            <a id="reloadTickets"> Recarregar tickets <img src="./images/refresh-cw.svg" class="reloadImg"/> </a>
-        </div>
-    `;
+                <div class="content2Info" onclick="autoReload()" >
+                    <a id="reloadTickets"> Recarregar tickets <img src="./images/refresh-cw.svg" class="reloadImg"/> </a>
+                    <p style="font-weight: normal; text-align: center;" id="nextTicket" >Próximo Ticket:</p>
+                </div>
+                `;
+    container2.innerHTML = `
+                <div class="content2Info" style="cursor: default">
+                    <a> Tickets já chamados e não finalizados</a>
+                </div>
+                `;
     if (!tickets || tickets.length == 0) {
         const buttonDiv = document.createElement('div');
         buttonDiv.innerHTML = `
-            <p>Não foram encontrados nenhum ticket.</p>
-        `;
+                <p> Não foram encontrados nenhum ticket.</p>
+                    `;
         container.appendChild(buttonDiv);
         isReloading = false;
-        return;
-    }
-    console.log('aaaaa', tickets);
-    tickets.forEach(ticket => {
-        const buttonDiv = document.createElement('div');
-        const preferentialText = ticket.isPreferred ? 'Preferencial *' : 'Não Preferencial';
-        const ticketNumber = ticket.value;
+    } else {
+        // chama 2 preferênciais, depois chama dois comuns
+        tickets.sort((a, b) => ((a.value - b.value)));
+        if (sequencePreferred < 2) {
+            tickets.sort((a, b) => ((b.isPreferred - a.isPreferred)));
+        } else {
+            tickets.sort((a, b) => ((a.isPreferred - b.isPreferred)));
+        }
+        console.log(tickets);
+        console.log(sequencePreferred);
+        const buttonDivOne = document.createElement('div');
+        const preferentialTextOne = tickets[0].isPreferred ? 'Ticket Preferencial*' : 'Não Preferencial';
+        const ticketNumberTwo = tickets[0].value;
+        // colocar um único ticket clicável
+        buttonDivOne.innerHTML = `
+                    <button style="background-color: green;" class="tickets" onclick="selectTicket([${tickets[0].value}, '${tickets[0].id}', '${tickets[0].sectorName}', ${tickets[0].isPreferred}])" >
+                        <p style="color: white" class="ticketsText">${preferentialTextOne}</p>
+                        <div>
+                            <p style="color: white">${ticketNumberTwo}</p>
+                        </div>
+                    </button>
+                `;
+        container.appendChild(buttonDivOne);
+        tickets.forEach(ticket => {
+            if (ticket.value === tickets[0].value) {
+                return;
+            }
+            const buttonDiv = document.createElement('div');
+            const preferentialText = ticket.isPreferred ? 'Ticket Preferencial*' : 'Não Preferencial';
+            const ticketNumberTwo = tickets[0].value;
+            const ticketNumber = ticket.value;
 
-        buttonDiv.innerHTML = `
-            <button class="tickets" onclick="selectTicket([${ticket.value}, '${ticket.id}', '${ticket.sectorName}'])">
+            buttonDiv.innerHTML = `
+                <button style="border-color: red;" class="tickets">
+                    <p class="ticketsText">${preferentialText}</p>
+                    <div>
+                        <p>${ticketNumber}</p>
+                    </div>
+                </button>
+                `;
+
+            container.appendChild(buttonDiv);
+        });
+
+    }
+    if (ticketsNotFinished && ticketsNotFinished.length > 0) {
+        //? Segunda barra
+        //* Tickets iniciados e não finalizados
+        ticketsNotFinished.sort((a, b) => (a.value - b.value));
+        ticketsNotFinished.forEach(ticket => {
+            // console.log(ticket);
+
+            const buttonDiv = document.createElement('div');
+            const preferentialText = ticket.isPreferred ? 'Ticket Preferencial*' : 'Não Preferencial';
+            const ticketNumber = ticket.value;
+            // inTreatment
+            buttonDiv.innerHTML = `
+                <button style="border-color: yellow;" class="tickets" onclick="finishTreatment([${ticket.value}, '${ticket.id}', '${ticket.sectorName}', true, ${ticket.isPreferred}])" >
                 <p class="ticketsText">${preferentialText}</p>
                 <div>
                     <p>${ticketNumber}</p>
                 </div>
             </button>
-        `;
+                `;
 
-        container.appendChild(buttonDiv);
-    });
-    isReloading = false;
+            container2.appendChild(buttonDiv);
+        });
+        isReloading = false;
+    } else {
+        isReloading = false;
+        return;
+    }
 }
 
-setInterval(autoReload(), 10000);
+setInterval(autoReload, 10000);
 
 setInterval(() => {
     if (inTreatment === true) {
