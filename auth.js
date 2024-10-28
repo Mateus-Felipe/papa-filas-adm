@@ -14,7 +14,7 @@ async function isLogged() {
         loginTitle.innerText = "Faça seu login!"
         return;
     }
-    await axios.post('http://172.16.254.253:6100/login', {
+    await axios.post('http://localhost:6100/login', {
         onlyInfo: true,
         login: jsonData.id,
     }).then(async res => {
@@ -45,7 +45,7 @@ async function handleAuth() {
     }
 
     loginVerifyLoading.style.display = 'flex';
-    await axios.post('http://172.16.254.253:6100/login', {
+    await axios.post('http://localhost:6100/login', {
         login: login.value,
         password: password.value
 
@@ -63,7 +63,7 @@ async function handleAuth() {
         try {
             loginTitle.innerText = `Erro: ${err.response.data.error}`
         } catch {
-            loginTitle.innerText = `Erro: Erro ao se conectar com o servidor! Verifique se o aparelho Papa-Filas está ligado e funcionando. Se persistir, talvez seja necessário reinicia-lo.`
+            loginTitle.innerText = `Erro ao se conectar com o servidor! Se persistir, favor entrar em contato com o técnico responsável.`
         }
         return;
     })

@@ -10,14 +10,11 @@
 
 :root {
     --link-dark: #020216;
-    --ascend-green: rgb(167, 228, 87);
+    --ascend-green: #084b8a;
 }
 
 .link {
-    color: #1a2f55;
-}
-
-body {
+    color: #fff;
 }
 
 .menuHome {
@@ -27,7 +24,12 @@ body {
     justify-content: space-between;
     width: 100%;
     padding: 40px;
-    background-color: rgb(167, 228, 87);
+    background-color: #084b8a;
+}
+
+.menuHome p,
+a {
+    color: #fff !important;
 }
 
 .superDaddy {
@@ -71,7 +73,7 @@ body {
     font-size: larger;
 }
 
-.content1 button:hover{
+.content1 button:hover {
     background-color: var(--ascend-green);
     transition: .5s ease;
 }
@@ -79,6 +81,7 @@ body {
 #starting {
     display: none;
 }
+
 #started {
     display: none;
 }
@@ -104,7 +107,11 @@ body {
     position: absolute;
     top: 10px;
     padding: 5px;
-    color: var(--link-dark);
+}
+
+.content2Info a,
+p {
+    color: var(--link-dark) !important;
     font-weight: bold;
 }
 
@@ -128,6 +135,15 @@ body {
     margin-left: 10px;
 }
 
+#reloadTickets,
+#reloadTickets2 {
+    color: #020216 !important;
+}
+
+.content2Info {
+    color: #020216 !important;
+}
+
 .tickets {
     /* width: 40%; */
     padding: 10px;
@@ -139,14 +155,19 @@ body {
     border: 1px dotted var(--ascend-green);
 }
 
-.tickets:hover{
+.tickets:hover {
     background-color: var(--ascend-green);
     transition: all 0.5s;
     cursor: pointer;
 }
 
+.firstTicketToCall {
+    color: #fff !important;
+}
+
 .ticketsText {
     margin-right: 10px;
+    color: #020216;
 }
 
 /* .tickets div {
