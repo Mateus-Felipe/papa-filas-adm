@@ -1,0 +1,33 @@
+.containerCharts {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.charts {
+  width: 80% !important;
+  margin-top: 20px;
+}
+
+.canvasChart {
+  border: 1px solid #084b8a;
+  border-radius: 10px 10px 0px 0px;
+  display: flex;
+}
+
+.infosChart {
+  background-color: #084b8a;
+  border-radius: 0px 0px 10px 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  padding: 5px;
+}
+
+.infosChart p {
+  color: #fff;
+  font-weight: bold;
+}

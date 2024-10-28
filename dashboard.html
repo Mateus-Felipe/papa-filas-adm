@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="./index.css" />
+    <link rel="stylesheet" href="./styles/dashboard_main.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard</title>
+  </head>
+  <body>
+    <nav class="menuHome">
+      <p>
+        Atendente:
+        <a class="link" style="font-weight: bold" id="attendantName"></a>
+      </p>
+      <p><a class="link" style="font-weight: bold">Painel de atendimento</a></p>
+      <p>
+        Setor: <a class="link" style="font-weight: bold" id="sectorName"> </a>
+        <br />Versão: 2.1.0 - 05/08/24
+      </p>
+    </nav>
+    <button
+      onclick="reloadPage()"
+      style="
+        padding: 5px;
+        background-color: gray;
+        font-weight: bold;
+        color: white;
+        cursor: pointer;
+      "
+    >
+      Recarregar sistema
+    </button>
+    <p style="font-size: 10px">Mateus Felipe - UNIG 2024</p>
+    <div class="containerCharts">
+      <h1>Bem vindo ao dashboard</h1>
+      <p>Você está visualizando os dados do seu setor</p>
+      <div class="charts">
+        <canvas id="myChart30days" class="canvasChart"></canvas>
+        <div class="infosChart">
+          <p>Tickets comuns: 15</p>
+          <p>Tickets preferênciais: 15</p>
+        </div>
+      </div>
+      <div class="charts">
+        <canvas id="myChart60days" class="canvasChart"></canvas>
+      </div>
+      <div class="charts">
+        <canvas id="myChart90days" class="canvasChart"></canvas>
+      </div>
+      <div class="charts">
+        <canvas id="myChart180days" class="canvasChart"></canvas>
+      </div>
+      <div class="charts">
+        <canvas id="myChart365days" class="canvasChart"></canvas>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="scripts/dashboard_main.js" type="module"></script>
+  </body>
+</html>

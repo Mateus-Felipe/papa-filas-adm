@@ -1,31 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="./auth.css" />
     <title>Painel - Atendimento</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <nav class="menuHome">
-        <p> <a class="link">Painel - Lobby de atendimento</a> </p>
-        <p> <a class="link">Login</a> </p>
+      <p><a class="link">Painel - Lobby de atendimento</a></p>
+      <p><a class="link">Login</a></p>
     </nav>
     <div class="content">
-        <h1 id="loginTitle">Faça seu login</h1>
-        <input id="loginText" type="text" placeholder="Digite seu login">
-        <input id="passwordText" type="password" placeholder="Digite sua senha">
-        <button onclick="handleAuth()" id="btn">Entrar</button>
+      <button onclick="redirectToDash()">Dashboard</button>
+      <h1 id="loginTitle">Faça seu login</h1>
+      <input id="loginText" type="text" placeholder="Digite seu login" />
+      <input id="passwordText" type="password" placeholder="Digite sua senha" />
+      <button onclick="handleAuth()" id="btn">Entrar</button>
     </div>
     <div id="loginVerify">
-        <div>
-            <h1>Verificando seu login...</h1>
-        </div>
+      <div>
+        <h1>Verificando seu login...</h1>
+      </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="auth.js"></script>
-</body>
-
+    <script>
+      function redirectToDash() {
+        window.location.href = "dashboard.html";
+      }
+    </script>
+  </body>
 </html>
