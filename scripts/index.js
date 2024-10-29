@@ -47,7 +47,7 @@ async function startTreatment() {
     document.getElementById('tip2').style.display = 'none';
     buttonStart.style.display = 'none';
     document.getElementById('starting').style.display = 'block';
-    await axios.post('http://localhost:6100/treatment/start', {
+    await axios.post('http://172.16.254.253:6100/treatment/start', {
         ticket_id: selectedTicketNumber[1],
         sector: selectedTicketNumber[2],
         isPreferred: selectedTicketNumber[3]
@@ -105,7 +105,7 @@ async function finishTreatment(dataTicketOld) {
             return;
         }
     }
-    await axios.post('http://localhost:6100/treatment/finish', {
+    await axios.post('http://172.16.254.253:6100/treatment/finish', {
         ticket_id: dataTicketOld && dataTicketOld[3] ? dataTicketOld[1] : selectedTicketNumber[1],
         sector: dataTicketOld && dataTicketOld[3] ? dataTicketOld[2] : selectedTicketNumber[2],
         isPreferred: dataTicketOld && dataTicketOld[3] ? dataTicketOld[4] : selectedTicketNumber[3]
@@ -154,7 +154,7 @@ async function autoReload() {
         return;
     }
     isReloading = true;
-    await axios.get('http://localhost:6100/ticket/all', {
+    await axios.get('http://172.16.254.253:6100/ticket/all', {
         headers: {
             "ngrok-skip-browser-warning": 4,
             "Access-Control-Request-Private-Network": true,

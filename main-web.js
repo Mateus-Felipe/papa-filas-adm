@@ -9,7 +9,7 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: true, // Para Electron 12 ou superior, você pode precisar ajustar esta configuração
+      contextIsolation: true,
       allowRunningInsecureContent: true,
       webSecurity: false,
       preload: path.join(__dirname, "preload.js"),

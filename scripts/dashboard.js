@@ -6,7 +6,7 @@ window.onload = loadInfo();
 
 window.document.getElementById("updateToday").addEventListener("click", async () => {
     window.document.getElementById("loginVerify").style.display = "flex"
-    await axios.get("http://localhost:6100/dashboard/update", {
+    await axios.get("http://172.16.254.253:6100/dashboard/update", {
         headers: {
             "Access-Control-Request-Private-Network": true,
             "Access-Control-Allow-Credentials": true,
@@ -42,7 +42,7 @@ export async function loadInfo() {
 }
 
 async function loadCharts() {
-    await axios.post("http://localhost:6100/dashboard", {
+    await axios.post("http://172.16.254.253:6100/dashboard", {
 
     }, {
         headers: {
@@ -103,11 +103,7 @@ async function loadCharts() {
                     scales: {
                         y: {
                             beginAtZero: true,
-                            stacked: true
-                        },
-                        x: {
-                            stacked: true
-                        }
+                        },                       
                     },
                 },
             });

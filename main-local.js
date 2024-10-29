@@ -2,6 +2,9 @@ const { app, BrowserWindow, ipcMain, session, Menu } = require('electron');
 const path = require('path');
 const url = require('url');
 
+const { updateElectronApp } = require('update-electron-app')
+updateElectronApp()
+
 // Cria a janela do navegador.
 function createWindow() {
   const win = new BrowserWindow({

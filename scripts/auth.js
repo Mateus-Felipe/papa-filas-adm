@@ -12,7 +12,7 @@ async function isLogged() {
         loginTitle.innerText = "Faça seu login!"
         return;
     }
-    await axios.post('http://localhost:6100/login', {
+    await axios.post('http://172.16.254.253:6100/login', {
         onlyInfo: true,
         login: jsonData.id,
     }).then(async res => {
@@ -43,7 +43,7 @@ async function handleAuth() {
     }
 
     loginVerifyLoading.style.display = 'flex';
-    await axios.post('http://localhost:6100/login', {
+    await axios.post('http://172.16.254.253:6100/login', {
         login: login.value,
         password: password.value
 
