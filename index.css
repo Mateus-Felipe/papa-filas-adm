@@ -32,6 +32,16 @@ a {
     color: #fff !important;
 }
 
+.dashboardLink {
+    color: #917b00 !important;
+    font-weight: bold;
+    transition: all 0.5s linear;
+}
+
+.dashboardLink:hover {
+    scale: 120%; text-decoration: underline;
+}
+
 .superDaddy {
     display: flex;
     flex-direction: row;

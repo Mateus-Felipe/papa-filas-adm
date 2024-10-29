@@ -3,12 +3,10 @@ var loginTitle = document.getElementById('loginTitle');
 
 async function isLogged() {
     loginVerifyLoading.style.display = 'flex';
-    // var cookiesDataUser = getCookie('datauser')
     var cookiesDataUser = await window.electronAPI.getLoginAuth();
-    // console.log(cookiesDataUser);
-    // await window.electronAPI.setLoginAuth('aaaaaaaaaaa');
     var jsonData = cookiesDataUser ? JSON.parse(cookiesDataUser) : null;
-    if (!jsonData || !jsonData.id) {
+    // if (!jsonData || !jsonData.id) {
+    if (true) {
         loginVerifyLoading.style.display = 'none';
         loginTitle.style.color = '#f00';
         loginTitle.innerText = "Faça seu login!"
