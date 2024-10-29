@@ -4,6 +4,7 @@ var tickets = [];
 var ticketsNotFinished = [];
 var isReloading = false;
 var inTreatment = false;
+var token = null;
 var sequencePreferred = 0;
 
 async function loadInfo() {
@@ -13,6 +14,8 @@ async function loadInfo() {
     if (!userInfosCookie) {
         return window.location.href = "login.html";
     }
+    console.log(JSON.parse(userInfosCookie));
+    token = JSON.parse(userInfosCookie).token
     const dataAttendant = JSON.parse(userInfosCookie);
     var attName = document.getElementById('attendantName')
     attName.innerText = `${dataAttendant.name}`
@@ -49,8 +52,11 @@ async function startTreatment() {
         sector: selectedTicketNumber[2],
         isPreferred: selectedTicketNumber[3]
     }, {
-        "Access-Control-Request-Private-Network": true,
-        "Access-Control-Allow-Credentials": true,
+        headers: {
+            "Access-Control-Request-Private-Network": true,
+            "Access-Control-Allow-Credentials": true,
+            "authorization": `Bearer ${token}`
+        }
     })
         .then(async res => {
             if (res.data.err) {
@@ -79,7 +85,10 @@ async function startTreatment() {
             inTreatment = true;
             document.getElementById('infoTicket').style.display = 'block'
             sequencePreferred = await sequencePreferred == 2 ? 0 : sequencePreferred + 1;
-        }).catch(err => {
+        }).catch(async err => {
+            if (err?.status == 401) {
+                return window.location.href = 'login.html';
+            }
             document.getElementById('infoTicket').style.display = 'none'
             console.warn(err);
             alert('Ocorreu um erro... Por favor, atualize o seu sistema.');
@@ -101,8 +110,11 @@ async function finishTreatment(dataTicketOld) {
         sector: dataTicketOld && dataTicketOld[3] ? dataTicketOld[2] : selectedTicketNumber[2],
         isPreferred: dataTicketOld && dataTicketOld[3] ? dataTicketOld[4] : selectedTicketNumber[3]
     }, {
-        "Access-Control-Request-Private-Network": true,
-        "Access-Control-Allow-Credentials": true,
+        headers: {
+            "Access-Control-Request-Private-Network": true,
+            "Access-Control-Allow-Credentials": true,
+            "authorization": `Bearer ${token}`
+        }
     })
         .then(() => {
             var finish = document.getElementById('finish');
@@ -117,6 +129,9 @@ async function finishTreatment(dataTicketOld) {
             // window.location.reload();
             autoReload();
         }).catch(err => {
+            if (err?.status == 401) {
+                return window.location.href = 'login.html';
+            }
             console.warn(err);
             selectedTicketNumber = [];
             document.getElementById('start').style.display = 'block';
