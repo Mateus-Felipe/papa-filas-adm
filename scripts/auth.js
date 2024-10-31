@@ -13,7 +13,7 @@ async function isLogged() {
     return;
   }
   await axios
-    .post("http://localhost:6100/login", {
+    .post("http://172.16.254.253:6100/login", {
       onlyInfo: true,
       login: jsonData.id,
     })
@@ -47,7 +47,7 @@ async function handleAuth() {
 
   loginVerifyLoading.style.display = "flex";
   await axios
-    .post("http://localhost:6100/login", {
+    .post("http://172.16.254.253:6100/login", {
       login: login.value,
       password: password.value,
     })

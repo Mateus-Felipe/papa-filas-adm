@@ -1,8 +1,8 @@
 {
   "name": "web-adm-papafilas",
-  "version": "3.0.1",
+  "version": "3.0.8",
   "description": "Hello World!",
-  "main": "main-web.js",
+  "main": "main-local.js",
   "author": "Mateus Felipe",
   "license": "MIT",
   "type": "commonjs",
@@ -12,14 +12,22 @@
   },
   "scripts": {
     "dev": "electron .",
-    "build": "yarn electron-builder build -w --publish never"
+    "build": "yarn electron-builder build -w --publish always"
   },
   "dependencies": {
-    "axios": "^1.5.1",
-    "update-electron-app": "^3.0.0"
+    "electron-updater": "^6.3.9"
   },
   "devDependencies": {
     "electron": "^29.1.4",
     "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Mateus-Felipe",
+        "repo": "papa-filas-adm"
+      }
+    ]
   }
 }

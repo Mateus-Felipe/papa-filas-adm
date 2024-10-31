@@ -23,7 +23,7 @@ function createWindow() {
   // console.log(__dirname);
   const startUrl = url.format({
     // pathname: path.join(__dirname, 'index.html'), // Ajuste este caminho conforme necessário
-    pathname: "localhost:5501/index.html", // Ajuste este caminho conforme necessário
+    pathname: "172.16.254.253:5501/index.html", // Ajuste este caminho conforme necessário
     protocol: "http:",
     slashes: true,
   });

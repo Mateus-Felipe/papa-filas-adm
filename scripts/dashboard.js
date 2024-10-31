@@ -78,7 +78,7 @@ window.document
   .addEventListener("click", async () => {
     window.document.getElementById("loginVerify").style.display = "flex";
     await axios
-      .get("http://localhost:6100/dashboard/update", {
+      .get("http://172.16.254.253:6100/dashboard/update", {
         headers: {
           "Access-Control-Request-Private-Network": true,
           "Access-Control-Allow-Credentials": true,
@@ -125,7 +125,7 @@ async function loadCharts() {
   window.document.getElementById("loginVerify").style.display = "flex";
   await axios
     .post(
-      "http://localhost:6100/dashboard",
+      "http://172.16.254.253:6100/dashboard",
       {},
       {
         headers: {

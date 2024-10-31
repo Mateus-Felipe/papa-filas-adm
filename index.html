@@ -16,7 +16,7 @@
       <p><a class="link" style="font-weight: bold">Painel de atendimento</a></p>
       <p>
         Setor: <a class="link" style="font-weight: bold" id="sectorName"> </a>
-        <br />Versão: 3.0.1 - 27/10/2024
+        <br />Versão: <a id="version"></a>
       </p>
     </nav>
     <button
@@ -37,7 +37,7 @@
         <h1 id="status">
           Status: Livre (Selecione um ticket e inicie um atendimento)
         </h1>
-        <a href="/dashboard.html" class="textLink"> Abrir Dashboard </a>
+        <a href="dashboard.html" class="textLink"> Abrir Dashboard </a>
         <p class="tip">
           1 - Selecione um ticket <br />2 - Inicie o atendimento <br />3 -
           Finalize o atendimento <br />4 - Reinicie o processo <br />* Os
@@ -82,7 +82,48 @@
         </div>
       </div>
     </div>
+    <div id="notification" class="hidden">
+      <p id="message"></p>
+      <button id="close-button" onClick="closeNotification()">Close</button>
+      <button id="restart-button" onClick="restartApp()" class="hidden">
+        Restart
+      </button>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="./scripts/index.js"></script>
+    <script>
+      const version = document.getElementById("version");
+      window.electronAPI.send("app_version");
+
+      window.electronAPI.on("app_version", (event, arg) => {
+        version.innerText = arg.version;
+      });
+
+      const notification = document.getElementById("notification");
+      const message = document.getElementById("message");
+      const restartButton = document.getElementById("restart-button");
+
+      window.electronAPI.on("update_available", () => {
+        window.electronAPI.ipcRenderer.removeAllListeners("update_available");
+        message.innerText = "A new update is available. Downloading now...";
+        notification.classList.remove("hidden");
+      });
+
+      window.electronAPI.on("update_downloaded", () => {
+        window.electronAPI.ipcRenderer.removeAllListeners("update_downloaded");
+        message.innerText =
+          "Update Downloaded. It will be installed on restart. Restart now?";
+        restartButton.classList.remove("hidden");
+        notification.classList.remove("hidden");
+      });
+
+      function closeNotification() {
+        notification.classList.add("hidden");
+      }
+
+      function restartApp() {
+        window.electronAPI.send("restart_app");
+      }
+    </script>
   </body>
 </html>

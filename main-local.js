@@ -2,14 +2,16 @@ const { app, BrowserWindow, ipcMain, session, Menu } = require("electron");
 const path = require("path");
 const url = require("url");
 
-const { updateElectronApp } = require("update-electron-app");
-updateElectronApp();
+const { autoUpdater } = require("electron-updater");
 
 app.commandLine.appendSwitch("lang", "pt-BR");
-
+function sendStatusToWindow(text) {
+  win.webContents.send("message", text);
+}
+let win;
 // Cria a janela do navegador.
 function createWindow() {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 800,
     height: 600,
     webPreferences: {
@@ -34,8 +36,9 @@ function createWindow() {
   win.loadURL(startUrl);
   // win.webContents.openDevTools();
 
-  // Abre as DevTools.
-  // win.webContents.openDevTools();
+  ipcMain.on("app_version", (event) => {
+    event.sender.send("app_version", { version: app.getVersion() });
+  });
   win.once("focus", () => win.flashFrame(false));
   ipcMain.handle("blink-taskbar-notification", (event, activate) => {
     if (activate[1] == "all") {
@@ -69,7 +72,15 @@ function createWindow() {
 
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
+
+  win.once("ready-to-show", () => {
+    autoUpdater.checkForUpdatesAndNotify();
+  });
 }
+
+ipcMain.on("restart_app", () => {
+  autoUpdater.quitAndInstall();
+});
 
 ipcMain.handle("set-auth-data", (event, loginData) => {
   // Armazene os dados de login na sessão
@@ -99,4 +110,26 @@ app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+});
+
+autoUpdater.on("update-available", () => {
+  win.webContents.send("update_available");
+});
+autoUpdater.on("error", (err) => {
+  sendStatusToWindow("Erro na atualização automática: " + err);
+});
+autoUpdater.on("download-progress", (progressObj) => {
+  let log_message = "Velocidade de download: " + progressObj.bytesPerSecond;
+  log_message = log_message + " - Em " + progressObj.percent + "%";
+  log_message =
+    log_message +
+    " (" +
+    progressObj.transferred +
+    "/" +
+    progressObj.total +
+    ")";
+  sendStatusToWindow(log_message);
+});
+autoUpdater.on("update-downloaded", () => {
+  win.webContents.send("update_downloaded");
 });

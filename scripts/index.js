@@ -49,7 +49,7 @@ async function startTreatment() {
   document.getElementById("starting").style.display = "block";
   await axios
     .post(
-      "http://localhost:6100/treatment/start",
+      "http://172.16.254.253:6100/treatment/start",
       {
         ticket_id: selectedTicketNumber[1],
         sector: selectedTicketNumber[2],
@@ -131,7 +131,7 @@ async function finishTreatment(dataTicketOld) {
   }
   await axios
     .post(
-      "http://localhost:6100/treatment/finish",
+      "http://172.16.254.253:6100/treatment/finish",
       {
         ticket_id:
           dataTicketOld && dataTicketOld[3]
@@ -194,7 +194,7 @@ async function autoReload() {
   }
   isReloading = true;
   await axios
-    .get("http://localhost:6100/ticket/all", {
+    .get("http://172.16.254.253:6100/ticket/all", {
       headers: {
         "ngrok-skip-browser-warning": 4,
         "Access-Control-Request-Private-Network": true,
