@@ -1,84 +1,118 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="./styles/index.css" />
     <link rel="stylesheet" href="./styles/dashboard.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <nav class="menuHome">
-        <p>
-            Atendente:
-            <a class="link" style="font-weight: bold" id="attendantName"></a>
-        </p>
-        <p><a class="link" style="font-weight: bold">Painel de atendimento</a></p>
-        <p>
-            Setor: <a class="link" style="font-weight: bold" id="sectorName"> </a>
-            <br />Versão: 3.0.0 - 05/08/24
-        </p>
+      <p>
+        Atendente:
+        <a class="link" style="font-weight: bold" id="attendantName"></a>
+      </p>
+      <p><a class="link" style="font-weight: bold">Painel de atendimento</a></p>
+      <p>
+        Setor: <a class="link" style="font-weight: bold" id="sectorName"> </a>
+        <br />Versão: 3.0.0 - 05/08/24
+      </p>
     </nav>
-    <button onclick="reloadPage()" style="
+    <button
+      onclick="reloadPage()"
+      style="
         padding: 5px;
         background-color: gray;
         font-weight: bold;
         color: white;
         cursor: pointer;
-      ">
-        Recarregar sistema
+      "
+    >
+      Recarregar sistema
     </button>
     <p style="font-size: 10px">Mateus Felipe - UNIG 2024</p>
     <div class="containerCharts">
-        <h1>Bem vindo ao dashboard</h1>
-        <p>Você está visualizando os dados do seu setor</p>
-        <p>O dashboard é atualizado todos os dias durante a madrugada</p>
-        <p>Para ver os dados de hoje, clique em: <u>"Atualizar dashboard com os tickets de hoje"</u></p>
-        <p id="updateToday" class="dashboardLink">Atualizar dashboard com os tickets de hoje</p>
-        <a href="/index.html" class="dashboardLink">Painel de Atendimento</a>
-        <div class="inputsData">
-            <div class="inputsContainer">
-                <select id="selectDay" class="selectDays">
-                    <option value="30">30 dias</option>
-                    <option value="60">60 dias</option>
-                    <option value="90">90 dias</option>
-                    <option value="120">120 dias</option>
-                    <option value="180">180 dias</option>
-                    <option value="365">365 dias</option>
-                </select>
-                <div>
-                    <p>Comuns: </p>
-                    <input type="checkbox" id="commomCheck" checked />
-                </div>
-                <div>
-                    <p>Preferênciais: </p>
-                    <input type="checkbox" id="prefCheck" checked />
-                </div>
+      <h1>Bem vindo ao dashboard</h1>
+      <p>Você está visualizando os dados do seu setor</p>
+      <p>O dashboard é atualizado todos os dias durante a madrugada</p>
+      <p>
+        Para ver os dados de hoje, clique em:
+        <u>"Atualizar dashboard com os tickets de hoje"</u>
+      </p>
+      <p id="updateToday" class="textLink">
+        Atualizar dashboard com os tickets de hoje
+      </p>
+      <a href="/index.html" class="textLink">Painel de Atendimento</a>
+      <div class="inputsData">
+        <div class="inputsContainer">
+          <div class="selectsContainer">
+            <label for="startDay" id="exibitionStartDay"></label>
+            <label for="finishDay" id="exibitionFinishDay"></label>
+            <input type="date" id="startDay" class="inputDate" />
+            <input type="date" id="finishDay" class="inputDate" />
+            <!-- <select id="selectDay" class="selectDays">
+              <option value="30">30 dias</option>
+              <option value="60">60 dias</option>
+              <option value="90">90 dias</option>
+              <option value="120">120 dias</option>
+              <option value="180">180 dias</option>
+              <option value="365">365 dias</option>
+            </select> -->
+            <select id="selectSector" class="selectDays">
+              <option value="todos">Todos os Setores</option>
+              <option value="Secretaria">Secretaria</option>
+              <option value="Matricula">Matricula</option>
+              <option value="Financeiro">Financeiro</option>
+            </select>
+          </div>
+          <div class="checkboxContainer">
+            <div>
+              <p>Comuns:</p>
+              <input type="checkbox" id="commomCheck" checked />
             </div>
-            <button class="buttonInputs" id="buttonConfirm">Confirmar</button>
+            <div>
+              <p>Preferenciais:</p>
+              <input type="checkbox" id="prefCheck" checked />
+            </div>
+          </div>
         </div>
 
-        <div class="charts">
-            <canvas id="myChartPieSectors" class="pieChart"></canvas>
+        <button class="buttonInputs" id="buttonConfirm">Confirmar</button>
+        <button
+          class="buttonInputs"
+          style="background-color: green"
+          id="buttonDowloadExcel"
+        >
+          Baixar Planilha Excel
+        </button>
+      </div>
+
+      <div class="charts">
+        <canvas id="myChartPieSectors" class="pieChart"></canvas>
+      </div>
+      <div class="charts" id="chartContainer">
+        <canvas id="myChart30days" class="canvasChart barChart"></canvas>
+        <div class="infosChart">
+          <p id="common30">Tickets comuns: 15</p>
+          <p id="pref30">Tickets Preferenciais: 15</p>
         </div>
-        <div class="charts" id="chartContainer">
-            <canvas id="myChart30days" class="canvasChart barChart"></canvas>
-            <div class="infosChart">
-                <p id="common30">Tickets comuns: 15</p>
-                <p id="pref30">Tickets preferênciais: 15</p>
-            </div>
-        </div>
+      </div>
     </div>
     <div id="loginVerify">
-        <div>
-            <h1>Atualizando dados...</h1>
-        </div>
+      <div>
+        <h1>Atualizando dados...</h1>
+      </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"
+      integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
     <script src="./scripts/dashboard.js" type="module"></script>
-</body>
-
+  </body>
 </html>
